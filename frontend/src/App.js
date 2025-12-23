@@ -66,3 +66,13 @@ function App() {
 }
 
 export default App;
+
+
+// Part 1: Node Abstraction : a reusable abstraction for existing nodes and  5 new nodes
+
+// Part 2: Styling
+
+// Part 3: Text Node Logic :- width/height change dynamically and Allow users to define variables using {{ variableName }} syntax
+// and new Handle on the left side for each variable detected
+
+// Part 4: Backend Integration

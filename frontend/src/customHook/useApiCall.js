@@ -26,20 +26,16 @@ const useApiCall = (setShowModal) => {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data) {
         setResponse({
           nodes: data.num_nodes || 0,
           edges: data.num_edges || 0,
           isDag: data.is_dag !== undefined ? data.is_dag : true,
-        });
-        showToast({
-          description: `Pipeline parsed successfully! Nodes: ${data.num_nodes}, Edges: ${data.num_edges}, DAG: ${data.is_dag ? 'Yes' : 'No'}`,
-          title: "Success",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-          status: "success",
         });
         setShowModal(true);
       }

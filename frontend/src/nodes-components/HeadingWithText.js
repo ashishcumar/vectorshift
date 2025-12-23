@@ -24,7 +24,6 @@ function HeadingWithText({ headingText, subHeading, icon, fontSizeParam, id }) {
     } else if (selectedNode === id) {
       removeNode(id);
     } else {
-      console.log("unhandled case");
     }
   };
 

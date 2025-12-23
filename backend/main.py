@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any
 from collections import defaultdict, deque
@@ -55,21 +55,33 @@ def read_root():
 
 @app.post('/pipelines/parse')
 def parse_pipeline(pipeline: Dict[str, Any]):
+    if not isinstance(pipeline, dict):
+        raise HTTPException(status_code=400, detail='Invalid pipeline format')
+    
     nodes = pipeline.get('nodes', [])
     edges = pipeline.get('edges', [])
     
-    num_nodes = len(nodes)
-    num_edges = len(edges)
-    is_dag_result = is_dag(nodes, edges)
+    if not isinstance(nodes, list) or not isinstance(edges, list):
+        raise HTTPException(status_code=400, detail='Nodes and edges must be lists')
     
-    return {
-        'num_nodes': num_nodes,
-        'num_edges': num_edges,
-        'is_dag': is_dag_result
-    }
+    try:
+        num_nodes = len(nodes)
+        num_edges = len(edges)
+        is_dag_result = is_dag(nodes, edges)
+        
+        return {
+            'num_nodes': num_nodes,
+            'num_edges': num_edges,
+            'is_dag': is_dag_result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'Error processing pipeline: {str(e)}')
 
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
+
+
+#  cd backend && source venv/bin/activate && uvicorn main:app --reload

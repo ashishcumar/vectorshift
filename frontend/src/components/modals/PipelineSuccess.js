@@ -8,7 +8,10 @@ import {
   ModalOverlay,
   Box,
   Text,
+  HStack,
   VStack,
+  Divider,
+  Badge,
   useTheme,
 } from "@chakra-ui/react";
 import React from "react";
@@ -16,116 +19,143 @@ import React from "react";
 function PipelineSuccess({ response, showModal, setShowModal, resetNode }) {
   const theme = useTheme();
 
+  const StatItem = ({ label, value, badgeColor }) => (
+    <Box
+      w="100%"
+      py={4}
+      px={0}
+    >
+      <HStack justifyContent="space-between" alignItems="center" spacing={4}>
+        <Text
+          fontSize="sm"
+          fontWeight="500"
+          color="gray.600"
+          letterSpacing="0.01em"
+        >
+          {label}
+        </Text>
+        <Badge
+          fontSize="md"
+          fontWeight="600"
+          px={3}
+          py={1}
+          borderRadius="full"
+          colorScheme={badgeColor}
+          variant="subtle"
+        >
+          {value}
+        </Badge>
+      </HStack>
+    </Box>
+  );
+
   return (
     <Modal
       isOpen={showModal}
       isCentered
       onClose={() => setShowModal(false)}
       size="md"
+      motionPreset="scale"
     >
-      <ModalOverlay backdropFilter="blur(4px)" bg="blackAlpha.300" />
+      <ModalOverlay 
+        backdropFilter="blur(8px)" 
+        bg="blackAlpha.600" 
+      />
       <ModalContent
-        borderRadius="md"
-        boxShadow={theme.shadows.primaryShadow}
-        p={2}
+        borderRadius="xl"
+        boxShadow="0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+        overflow="hidden"
+        maxW="480px"
       >
         <ModalHeader
-          fontWeight="bold"
-          fontSize="lg"
-          color={theme.colors.primary}
-          borderBottom={`1px solid ${theme.colors.border}`}
-          mb={4}
+          fontWeight="600"
+          fontSize="xl"
+          color="gray.800"
+          pb={3}
+          pt={6}
+          px={6}
+          bg="white"
+          borderBottom="1px solid"
+          borderColor="gray.100"
         >
-          Pipeline Succeeded
+          Pipeline Analysis Results
         </ModalHeader>
 
-        <ModalBody>
-          <VStack
-            spacing={4}
-            bg="linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)"
-            p={6}
-            borderRadius="lg"
-            boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-            color="#2e7d32"
-          >
-            <Box 
-              w="100%" 
-              display="flex" 
-              justifyContent="space-between"
-              alignItems="center"
-              p={3}
+        <ModalBody px={6} py={6} bg="gray.50">
+          <VStack spacing={0} align="stretch">
+            <Box
               bg="white"
-              borderRadius="md"
-              boxShadow="sm"
+              borderRadius="lg"
+              border="1px solid"
+              borderColor="gray.200"
+              overflow="hidden"
             >
-              <Text fontWeight="bold" fontSize="md">Number of Nodes:</Text>
-              <Text fontWeight="bold" fontSize="lg" color="rgb(99, 102, 241)">
-                {response?.nodes ?? 0}
-              </Text>
-            </Box>
-
-            <Box 
-              w="100%" 
-              display="flex" 
-              justifyContent="space-between"
-              alignItems="center"
-              p={3}
-              bg="white"
-              borderRadius="md"
-              boxShadow="sm"
-            >
-              <Text fontWeight="bold" fontSize="md">Number of Edges:</Text>
-              <Text fontWeight="bold" fontSize="lg" color="rgb(99, 102, 241)">
-                {response?.edges ?? 0}
-              </Text>
-            </Box>
-
-            <Box 
-              w="100%" 
-              display="flex" 
-              justifyContent="space-between"
-              alignItems="center"
-              p={3}
-              bg="white"
-              borderRadius="md"
-              boxShadow="sm"
-            >
-              <Text fontWeight="bold" fontSize="md">Directed Acyclic Graph (DAG):</Text>
-              <Text 
-                fontWeight="bold" 
-                fontSize="lg"
-                color={response?.isDag ? "#2e7d32" : "#d32f2f"}
-              >
-                {response?.isDag ? "✓ Yes" : "✗ No"}
-              </Text>
+              <Box px={6} py={4}>
+                <StatItem
+                  label="Total Nodes"
+                  value={response?.nodes ?? 0}
+                  badgeColor="blue"
+                />
+                <Divider my={2} borderColor="gray.100" />
+                <StatItem
+                  label="Total Edges"
+                  value={response?.edges ?? 0}
+                  badgeColor="purple"
+                />
+                <Divider my={2} borderColor="gray.100" />
+                <HStack justifyContent="space-between" alignItems="center" py={2}>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="500"
+                    color="gray.600"
+                    letterSpacing="0.01em"
+                  >
+                    DAG Status
+                  </Text>
+                  <Badge
+                    fontSize="sm"
+                    fontWeight="600"
+                    px={3}
+                    py={1.5}
+                    borderRadius="full"
+                    colorScheme={response?.isDag ? "green" : "red"}
+                    variant="solid"
+                  >
+                    {response?.isDag ? "Valid DAG" : "Not a DAG"}
+                  </Badge>
+                </HStack>
+              </Box>
             </Box>
           </VStack>
         </ModalBody>
 
-        <ModalFooter gap={3}>
+        <ModalFooter
+          gap={3}
+          px={6}
+          py={4}
+          bg="white"
+          borderTop="1px solid"
+          borderColor="gray.100"
+        >
           <Button
-            bg={theme.colors.primary}
-            color="white"
-            _hover={{ bg: theme.colors.primary }}
+            variant="ghost"
+            colorScheme="gray"
             onClick={() => setShowModal(false)}
+            fontWeight="500"
           >
             Close
           </Button>
-
           <Button
-            variant="outline"
-            borderColor={theme.colors.primary}
-            color={theme.colors.primary}
-            _hover={{
-              bg: theme.colors.primaryLight100,
-              borderColor: theme.colors.primary,
-            }}
+            bg="gray.900"
+            color="white"
+            _hover={{ bg: "gray.800" }}
             onClick={() => {
               setShowModal(false);
               resetNode();
             }}
+            fontWeight="500"
           >
-            Close & Reset Nodes
+            Reset Pipeline
           </Button>
         </ModalFooter>
       </ModalContent>
