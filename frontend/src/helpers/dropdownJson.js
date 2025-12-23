@@ -93,6 +93,11 @@ export const toolBarJson = [
     icon: <TextSvg />,
   },
   {
+    type: "openai",
+    label: "LLM",
+    icon: <OpenAiSvg />,
+  },
+  {
     type: "timer",
     label: "Time",
     icon: <TimerSvg />,
